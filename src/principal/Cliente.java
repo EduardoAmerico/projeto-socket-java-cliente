@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -82,14 +83,14 @@ public class Cliente {
 		lblCriptografada.setBounds(25, 109, 96, 20);
 		frame.getContentPane().add(lblCriptografada);
 		
-		JTextPane tfCripto = new JTextPane();
+		JTextArea tfCripto = new JTextArea();
+		tfCripto.setLineWrap(true);
 		tfCripto.setBorder(new LineBorder(new Color(0, 0, 0)));
-		tfCripto.setEnabled(false);
-		tfCripto.setBounds(131, 109, 268, 58);
+		tfCripto.setBounds(131, 109, 268, 92);
 		frame.getContentPane().add(tfCripto);
 
 		JButton btnNewButton = new JButton("Criptografar");
-		btnNewButton.setBounds(285, 178, 114, 23);
+		btnNewButton.setBounds(286, 212, 114, 23);
 		btnNewButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -100,12 +101,16 @@ public class Cliente {
 				if(tfSenha.getText().length() > 3) {
 					 senha = iniciaCliente(tfSenha.getText());
 					 
-					 if(senha.equals(senhaAux)) {
-						 tfCripto.setText("");
-						 JOptionPane.showMessageDialog(null, "Ouve um problema e a senha não pode ser alterada!!!");
-					 }else {
-						 tfCripto.setText(senha);
+					 if(senha != null) {
+						 if(senha.equals(senhaAux)) {
+							 tfCripto.removeAll();
+							 JOptionPane.showMessageDialog(null, "Ouve um problema e a senha não pode ser alterada!!!");
+						 }else {
+							 tfCripto.setText(senha);
+						 }
 					 }
+					  
+					 
 				}else {
 					JOptionPane.showMessageDialog(null, "Senha muito pequena!! /n Por favor digite uma senha maior");
 				}
@@ -122,7 +127,7 @@ public class Cliente {
 		try {
 
 			socket = new Socket("localhost", 55555);
-			System.out.println("Entrou");
+			System.out.println("Cliente cinseguiu se conectar no servidor na porta: 5555");
 			ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
 			ObjectInputStream imput = new ObjectInputStream(socket.getInputStream());
 
@@ -131,7 +136,7 @@ public class Cliente {
 			output.flush();
 
 			senhaNova = imput.readUTF();
-			System.out.println("Senha nova é: " + senhaNova);
+			System.out.println("Senha criptografada é: " + senhaNova);
 
 			output.close();
 			imput.close();
